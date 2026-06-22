@@ -1,0 +1,147 @@
+.cabecalho {
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.campo-filtro {
+  margin: 0;
+}
+.campo-filtro select,
+.campo-filtro input {
+  min-width: 170px;
+}
+.busca-filtro {
+  flex: 1;
+  min-width: 220px;
+}
+.busca-filtro input {
+  width: 100%;
+}
+
+.colunas-controle {
+  position: relative;
+  margin-left: auto;
+}
+
+.painel-colunas {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  width: 230px;
+  padding: 0.75rem;
+  z-index: 20;
+  box-shadow: var(--sombra-md);
+}
+
+.painel-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+.dica-arrastar {
+  font-size: 0.7rem;
+}
+
+.item-coluna {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 8px;
+  background: var(--cor-superficie);
+}
+.item-coluna:hover {
+  background: var(--cor-fundo);
+}
+.item-coluna label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+.item-coluna input {
+  width: auto;
+}
+.arrasta {
+  cursor: grab;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  letter-spacing: -2px;
+  user-select: none;
+}
+.largura-total {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Estados de drag do CDK */
+.cdk-drag-preview {
+  box-shadow: var(--sombra-md);
+  background: var(--cor-superficie);
+  border-radius: 8px;
+  padding: 0.35rem 0.4rem;
+}
+.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+.cdk-drop-list-dragging .item-coluna:not(.cdk-drag-placeholder) {
+  transition: transform 0.18s ease;
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+}
+
+.acoes-col {
+  text-align: right;
+  white-space: nowrap;
+}
+.acoes-celula {
+  justify-content: flex-end;
+}
+
+.icone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  background: var(--cor-superficie);
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+  transition: all 0.15s;
+}
+.icone-btn.editar:hover {
+  color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+}
+.icone-btn.excluir:hover {
+  color: var(--cor-perigo);
+  border-color: var(--cor-perigo);
+  background: var(--cor-perigo-clara);
+}
+
+.vazio {
+  padding: 2.5rem 1rem;
+  color: var(--cor-texto-suave);
+}
+
+.paginacao {
+  margin-top: 1rem;
+}

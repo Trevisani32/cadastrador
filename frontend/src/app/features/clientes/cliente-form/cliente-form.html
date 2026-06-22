@@ -1,0 +1,243 @@
+<div class="cabecalho">
+  <a routerLink="/clientes" class="voltar texto-suave">← Voltar para a lista</a>
+  <h1>{{ id() ? 'Editar cliente' : 'Novo cliente' }}</h1>
+</div>
+
+@if (erro()) {
+  <div class="alerta alerta-erro">{{ erro() }}</div>
+}
+
+@if (carregando()) {
+  <div class="card secao texto-centro texto-suave">Carregando...</div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <!-- Dados básicos -->
+    <section class="card secao">
+      <h2>Informações básicas</h2>
+      <div class="grid">
+        <div class="campo col-2">
+          <label for="nome">Nome / Razão social *</label>
+          <input id="nome" type="text" formControlName="nome" [class.invalido]="campoInvalido('nome')" />
+          @if (campoInvalido('nome')) { <span class="erro-campo">Informe o nome.</span> }
+        </div>
+
+        <div class="campo">
+          <label for="tipoPessoa">Tipo de pessoa *</label>
+          <select id="tipoPessoa" formControlName="tipoPessoa">
+            @for (t of tiposPessoa; track t.valor) {
+              <option [value]="t.valor">{{ t.rotulo }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="genero">Gênero</label>
+          <select id="genero" formControlName="genero">
+            @for (g of generos; track g.valor) {
+              <option [value]="g.valor">{{ g.rotulo }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="dataNascimento">Data de nascimento / fundação</label>
+          <input id="dataNascimento" type="text" inputmode="numeric" placeholder="dd/mm/aaaa"
+                 maxlength="10" formControlName="dataNascimento" (input)="aoDigitarData()"
+                 [class.invalido]="campoInvalido('dataNascimento')" />
+          @if (campoInvalido('dataNascimento')) { <span class="erro-campo">Use o formato dd/mm/aaaa.</span> }
+        </div>
+
+        <div class="campo">
+          <label for="ativo">Situação</label>
+          <select id="ativo" formControlName="ativo">
+            <option [ngValue]="true">Ativo</option>
+            <option [ngValue]="false">Inativo</option>
+          </select>
+        </div>
+
+        <div class="campo col-2">
+          <label for="observacoes">Observações</label>
+          <textarea id="observacoes" rows="3" formControlName="observacoes"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Endereços -->
+    <section class="card secao">
+      <div class="flex entre itens-centro">
+        <h2>Endereços</h2>
+        <button type="button" class="btn btn-outline btn-sm" (click)="adicionarEndereco()">+ Adicionar</button>
+      </div>
+
+      <div formArrayName="enderecos">
+        @for (end of enderecos.controls; track $index) {
+          <div class="bloco" [formGroupName]="$index">
+            <div class="grid">
+              <div class="campo">
+                <label>Tipo</label>
+                <select formControlName="tipo">
+                  @for (t of tiposEndereco; track t.valor) {
+                    <option [value]="t.valor">{{ t.rotulo }}</option>
+                  }
+                </select>
+              </div>
+              <div class="campo">
+                <label>CEP <span class="texto-suave">(busca automática)</span></label>
+                <div class="cep-wrap">
+                  <input type="text" formControlName="cep" placeholder="00000-000"
+                         maxlength="9" (blur)="buscarCep($index)" />
+                  @if (cepCarregando() === $index) { <span class="cep-status">buscando...</span> }
+                </div>
+                @if (cepErro()?.indice === $index) { <span class="erro-campo">{{ cepErro()!.mensagem }}</span> }
+              </div>
+              <div class="campo col-2">
+                <label>Logradouro *</label>
+                <input type="text" formControlName="logradouro"
+                       [class.invalido]="end.get('logradouro')?.invalid && end.get('logradouro')?.touched" />
+              </div>
+              <div class="campo">
+                <label>Número</label>
+                <input type="text" formControlName="numero" />
+              </div>
+              <div class="campo">
+                <label>Complemento</label>
+                <input type="text" formControlName="complemento" />
+              </div>
+              <div class="campo">
+                <label>Bairro</label>
+                <input type="text" formControlName="bairro" />
+              </div>
+              <div class="campo">
+                <label>Cidade *</label>
+                <input type="text" formControlName="cidade"
+                       [class.invalido]="end.get('cidade')?.invalid && end.get('cidade')?.touched" />
+              </div>
+              <div class="campo">
+                <label>UF *</label>
+                <input type="text" formControlName="estado" maxlength="2" placeholder="SP"
+                       [class.invalido]="end.get('estado')?.invalid && end.get('estado')?.touched" />
+              </div>
+            </div>
+            <div class="bloco-rodape flex entre itens-centro">
+              <label class="check">
+                <input type="checkbox" [checked]="end.get('principal')?.value"
+                       (change)="marcarEnderecoPrincipal($index)" />
+                Endereço principal
+              </label>
+              <button type="button" class="btn btn-ghost btn-sm acao-remover" (click)="removerEndereco($index)">Remover</button>
+            </div>
+          </div>
+        } @empty {
+          <p class="texto-suave vazio-bloco">Nenhum endereço adicionado.</p>
+        }
+      </div>
+    </section>
+
+    <!-- Contatos -->
+    <section class="card secao">
+      <div class="flex entre itens-centro">
+        <h2>Formas de contato</h2>
+        <button type="button" class="btn btn-outline btn-sm" (click)="adicionarContato()">+ Adicionar</button>
+      </div>
+
+      <div formArrayName="contatos">
+        @for (cont of contatos.controls; track $index) {
+          <div class="bloco" [formGroupName]="$index">
+            <div class="grid">
+              <div class="campo">
+                <label>Tipo</label>
+                <select formControlName="tipo">
+                  @for (t of tiposContato; track t.valor) {
+                    <option [value]="t.valor">{{ t.rotulo }}</option>
+                  }
+                </select>
+              </div>
+              <div class="campo col-2">
+                <label>Valor *</label>
+                <input type="text" formControlName="valor" [placeholder]="placeholderContato($any(cont))"
+                       (input)="aoDigitarContato(cont)"
+                       [class.invalido]="cont.get('valor')?.invalid && cont.get('valor')?.touched" />
+                @if (cont.get('valor')?.touched && cont.get('valor')?.errors; as e) {
+                  <span class="erro-campo">
+                    @if (e['required']) { Informe o valor. }
+                    @else if (e['email']) { E-mail inválido. }
+                    @else if (e['pattern']) { Telefone inválido (mínimo 8 dígitos). }
+                  </span>
+                }
+              </div>
+              <div class="campo">
+                <label>Descrição</label>
+                <input type="text" formControlName="descricao" placeholder="Ex.: comercial" />
+              </div>
+            </div>
+            <div class="bloco-rodape flex entre itens-centro">
+              <label class="check">
+                <input type="checkbox" [checked]="cont.get('principal')?.value"
+                       (change)="marcarContatoPrincipal($index)" />
+                Contato principal
+              </label>
+              <button type="button" class="btn btn-ghost btn-sm acao-remover" (click)="removerContato($index)">Remover</button>
+            </div>
+          </div>
+        } @empty {
+          <p class="texto-suave vazio-bloco">Nenhum contato adicionado.</p>
+        }
+      </div>
+    </section>
+
+    <!-- Parentescos -->
+    <section class="card secao">
+      <div class="flex entre itens-centro">
+        <h2>Vínculos de parentesco</h2>
+        <button type="button" class="btn btn-outline btn-sm"
+                [disabled]="clientesDisponiveis().length === 0" (click)="adicionarParentesco()">+ Associar cliente</button>
+      </div>
+      <p class="texto-suave instrucao-bloco">Associe este cliente a outro já cadastrado (ex.: filho(a), cônjuge, pai, mãe).</p>
+
+      <div formArrayName="parentescos">
+        @for (par of parentescos.controls; track $index) {
+          <div class="bloco" [formGroupName]="$index">
+            <div class="grid">
+              <div class="campo col-2">
+                <label>Cliente *</label>
+                <select formControlName="parenteId"
+                        [class.invalido]="par.get('parenteId')?.invalid && par.get('parenteId')?.touched">
+                  <option [ngValue]="null" disabled>Selecione um cliente...</option>
+                  @for (c of clientesDisponiveis(); track c.id) {
+                    <option [ngValue]="c.id">{{ c.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="campo">
+                <label>Parentesco *</label>
+                <select formControlName="tipo">
+                  @for (t of tiposParentesco; track t.valor) {
+                    <option [value]="t.valor">{{ t.rotulo }}</option>
+                  }
+                </select>
+              </div>
+              @if (ehOutroParentesco(par)) {
+                <div class="campo col-2">
+                  <label>Qual o parentesco? *</label>
+                  <input type="text" formControlName="descricao" placeholder="Ex.: tio(a), primo(a), avô/avó" />
+                </div>
+              }
+              <div class="campo alinhar-botao">
+                <button type="button" class="btn btn-ghost btn-sm acao-remover" (click)="removerParentesco($index)">Remover</button>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <p class="texto-suave vazio-bloco">Nenhum vínculo adicionado.</p>
+        }
+      </div>
+    </section>
+
+    <div class="acoes-form flex gap-sm">
+      <button type="submit" class="btn btn-primary" [disabled]="salvando()">
+        {{ salvando() ? 'Salvando...' : 'Salvar cliente' }}
+      </button>
+      <a routerLink="/clientes" class="btn btn-outline">Cancelar</a>
+    </div>
+  </form>
+}

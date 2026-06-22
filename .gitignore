@@ -1,0 +1,28 @@
+# ===== Dependências / build (qualquer nível) =====
+node_modules/
+dist/
+.angular/
+target/
+
+# ===== Backend (Java / Maven) =====
+# Banco H2 em arquivo (dados locais — não versionar)
+backend/data/
+
+# ===== Logs =====
+*.log
+
+# ===== Testes E2E (Playwright) =====
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/.cache/
+
+# ===== IDE / Editor =====
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+
+# ===== Sistema operacional =====
+.DS_Store
+Thumbs.db

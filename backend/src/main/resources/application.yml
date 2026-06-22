@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: cadastrador
+  datasource:
+    url: jdbc:h2:file:./data/cadastrador;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      # Console web do H2 desabilitado por padrão (expõe o banco inteiro sem senha).
+      # Habilite apenas localmente com H2_CONSOLE_ENABLED=true.
+      enabled: ${H2_CONSOLE_ENABLED:false}
+      path: /h2-console
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    # Chave Base64 de 256 bits para assinar os tokens. NUNCA versionar em produção:
+    # forneça via variável de ambiente JWT_SECRET. Se vazia, uma chave aleatória é
+    # gerada em memória a cada inicialização (apropriado apenas para desenvolvimento).
+    secret: ${JWT_SECRET:}
+    # Validade do token em milissegundos (24h)
+    expiration: 86400000
+  cors:
+    allowed-origins: http://localhost:4200
+  recuperacao:
+    # Projeto de demonstração: expõe o código de recuperação na resposta/log para
+    # permitir testar o fluxo sem servidor de e-mail. Em um cenário real, defina
+    # EXPOR_CODIGO_RECUPERACAO=false e envie o código por e-mail.
+    expor-codigo: ${EXPOR_CODIGO_RECUPERACAO:true}
+  admin:
+    # Usuário administrador semeado na primeira execução. As credenciais podem ser
+    # sobrescritas por variáveis de ambiente; o default existe apenas para a demonstração.
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin123}
+    email: ${ADMIN_EMAIL:admin@exemplo.com}
+  # Cria 3 clientes de exemplo na primeira execução
+  seed-demo-data: true

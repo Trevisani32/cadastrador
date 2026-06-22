@@ -1,0 +1,167 @@
+<div class="tela-login">
+  <div class="card painel">
+    <div class="marca">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="34" height="34" fill="none">
+          <circle cx="32" cy="24" r="11" fill="#fff" />
+          <path d="M12 52c0-11 9-18 20-18s20 7 20 18v3H12z" fill="#fff" />
+        </svg>
+      </div>
+      <h1>Cadastro de Clientes</h1>
+      <p class="texto-suave">
+        @switch (tela()) {
+          @case ('login') { Entre com suas credenciais }
+          @case ('cadastro') { Crie sua conta para começar }
+          @case ('recuperar') { Recupere o acesso à sua conta }
+        }
+      </p>
+    </div>
+
+    @if (erro()) { <div class="alerta alerta-erro">{{ erro() }}</div> }
+    @if (sucesso()) { <div class="alerta alerta-sucesso">{{ sucesso() }}</div> }
+
+    <!-- LOGIN -->
+    @if (tela() === 'login') {
+      <form class="animar" [formGroup]="formLogin" (ngSubmit)="entrar()">
+        <div class="campo">
+          <label for="lg-user">Usuário</label>
+          <input id="lg-user" type="text" formControlName="username" autocomplete="username" />
+        </div>
+        <div class="campo">
+          <label for="lg-senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="lg-senha" [type]="mostrarSenha() ? 'text' : 'password'"
+                   formControlName="senha" autocomplete="current-password" />
+            <button type="button" class="olho" (click)="alternarSenha()"
+                    [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+              <ng-container [ngTemplateOutlet]="mostrarSenha() ? olhoFechado : olhoAberto" />
+            </button>
+          </div>
+        </div>
+        <button class="btn btn-primary largura-total" type="submit" [disabled]="carregando()">
+          {{ carregando() ? 'Aguarde...' : 'Entrar' }}
+        </button>
+        <div class="links">
+          <button type="button" class="link" (click)="irPara('recuperar')">Esqueci minha senha</button>
+        </div>
+        <div class="rodape">
+          <span class="texto-suave">Não tem conta?</span>
+          <button class="btn btn-ghost btn-sm" (click)="irPara('cadastro')">Criar conta</button>
+        </div>
+        <div class="dica texto-centro texto-suave">
+          <div>Demo — usuário <strong>admin</strong> · senha <strong>admin123</strong></div>
+          <div>E-mail (recuperação): <strong>admin&#64;exemplo.com</strong></div>
+        </div>
+      </form>
+    }
+
+    <!-- CADASTRO -->
+    @if (tela() === 'cadastro') {
+      <form class="animar" [formGroup]="formCadastro" (ngSubmit)="cadastrar()">
+        <div class="campo">
+          <label for="cd-nome">Nome completo</label>
+          <input id="cd-nome" type="text" formControlName="nome" autocomplete="name" />
+        </div>
+        <div class="campo">
+          <label for="cd-user">Usuário</label>
+          <input id="cd-user" type="text" formControlName="username" autocomplete="username" />
+        </div>
+        <div class="campo">
+          <label for="cd-email">E-mail</label>
+          <input id="cd-email" type="email" formControlName="email" autocomplete="email" />
+        </div>
+        <div class="campo">
+          <label for="cd-senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="cd-senha" [type]="mostrarSenha() ? 'text' : 'password'"
+                   formControlName="senha" autocomplete="new-password" />
+            <button type="button" class="olho" (click)="alternarSenha()"
+                    [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+              <ng-container [ngTemplateOutlet]="mostrarSenha() ? olhoFechado : olhoAberto" />
+            </button>
+          </div>
+        </div>
+        <button class="btn btn-primary largura-total" type="submit" [disabled]="carregando()">
+          {{ carregando() ? 'Aguarde...' : 'Cadastrar' }}
+        </button>
+        <div class="rodape">
+          <span class="texto-suave">Já tem conta?</span>
+          <button class="btn btn-ghost btn-sm" (click)="irPara('login')">Entrar</button>
+        </div>
+      </form>
+    }
+
+    <!-- RECUPERAR SENHA -->
+    @if (tela() === 'recuperar') {
+      <div class="animar">
+        @if (etapaRecuperacao() === 1) {
+          <form [formGroup]="formEsqueci" (ngSubmit)="solicitarCodigo()">
+            <p class="texto-suave instrucao">Informe o e-mail da conta. Enviaremos um código de 8 dígitos.</p>
+            <p class="texto-suave dica-email">Para testar, use o e-mail demo: <strong>admin&#64;exemplo.com</strong></p>
+            <div class="campo">
+              <label for="rc-email">E-mail</label>
+              <input id="rc-email" type="email" formControlName="email" autocomplete="email" />
+            </div>
+            <button class="btn btn-primary largura-total" type="submit" [disabled]="carregando()">
+              {{ carregando() ? 'Gerando...' : 'Enviar código' }}
+            </button>
+          </form>
+        } @else {
+          <form [formGroup]="formRedefinir" (ngSubmit)="redefinir()">
+            @if (codigoDemo()) {
+              <div class="alerta alerta-demo">
+                <strong>Modo demonstração:</strong> seu código é
+                <span class="codigo">{{ codigoDemo() }}</span>
+              </div>
+            }
+            <div class="campo">
+              <label>Código de verificação (8 dígitos)</label>
+              <div class="otp">
+                @for (i of indices; track i) {
+                  <input #caixaCodigo class="otp-box" type="text" inputmode="numeric" maxlength="1"
+                         [value]="digitos()[i]" autocomplete="off"
+                         (input)="aoDigitar(i, $event)"
+                         (keydown)="aoTeclar(i, $event)"
+                         (paste)="aoColar($event)" />
+                }
+              </div>
+            </div>
+            <div class="campo">
+              <label for="rc-senha">Nova senha</label>
+              <div class="senha-wrap">
+                <input id="rc-senha" [type]="mostrarSenha() ? 'text' : 'password'"
+                       formControlName="novaSenha" autocomplete="new-password" />
+                <button type="button" class="olho" (click)="alternarSenha()"
+                        [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Mostrar senha'">
+                  <ng-container [ngTemplateOutlet]="mostrarSenha() ? olhoFechado : olhoAberto" />
+                </button>
+              </div>
+            </div>
+            <button class="btn btn-primary largura-total" type="submit" [disabled]="carregando()">
+              {{ carregando() ? 'Redefinindo...' : 'Redefinir senha' }}
+            </button>
+          </form>
+        }
+        <div class="rodape">
+          <button class="btn btn-ghost btn-sm" (click)="irPara('login')">← Voltar para o login</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Ícones do olho -->
+<ng-template #olhoAberto>
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+</ng-template>
+<ng-template #olhoFechado>
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+</ng-template>

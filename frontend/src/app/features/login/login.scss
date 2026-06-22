@@ -1,0 +1,174 @@
+.tela-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+}
+
+.painel {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.marca {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 0.75rem;
+  border-radius: 16px;
+  background: var(--cor-primaria);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-md);
+}
+
+.marca h1 {
+  font-size: 1.25rem;
+}
+
+/* Transição suave entre login / cadastro / recuperar */
+.animar {
+  animation: aparecer 0.28s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Campo de senha com olho */
+.senha-wrap {
+  position: relative;
+}
+.senha-wrap input {
+  padding-right: 2.6rem;
+}
+.olho {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.35rem;
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+.olho:hover {
+  color: var(--cor-primaria);
+  background: var(--cor-fundo);
+}
+
+.largura-total {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Código de verificação em caixas separadas */
+.otp {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: space-between;
+}
+.otp-box {
+  width: 100%;
+  padding: 0.6rem 0;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: 'Consolas', monospace;
+}
+@media (max-width: 360px) {
+  .otp {
+    gap: 0.25rem;
+  }
+  .otp-box {
+    padding: 0.5rem 0;
+    font-size: 1rem;
+  }
+}
+
+.links {
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.link {
+  background: none;
+  border: none;
+  color: var(--cor-primaria);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.instrucao {
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.dica-email {
+  font-size: 0.8rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--cor-fundo);
+  border-radius: 8px;
+}
+
+.rodape {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.dica {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.alerta-demo {
+  padding: 0.7rem 1rem;
+  border-radius: var(--raio);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  background: #fef9c3;
+  color: #854d0e;
+  text-align: center;
+}
+.alerta-demo .codigo {
+  display: inline-block;
+  font-family: 'Consolas', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: #fff;
+  padding: 0.1rem 0.5rem;
+  border-radius: 6px;
+  margin-left: 0.25rem;
+}
