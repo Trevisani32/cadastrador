@@ -28,9 +28,15 @@
   width: 100%;
 }
 
+.filtros-acoes {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .colunas-controle {
   position: relative;
-  margin-left: auto;
 }
 
 .painel-colunas {
@@ -144,4 +150,33 @@
 
 .paginacao {
   margin-top: 1rem;
+}
+
+/* ===== Ajustes para telas pequenas (mobile) ===== */
+@media (max-width: 640px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .busca-filtro,
+  .campo-filtro select,
+  .campo-filtro input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .filtros-acoes {
+    margin-left: 0;
+    justify-content: space-between;
+  }
+
+  .filtros-acoes .btn {
+    flex: 1;
+  }
+
+  .painel-colunas {
+    width: min(260px, calc(100vw - 3rem));
+  }
 }

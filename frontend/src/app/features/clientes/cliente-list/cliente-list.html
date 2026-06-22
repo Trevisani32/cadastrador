@@ -29,10 +29,11 @@
     </select>
   </div>
 
-  <button class="btn btn-ghost btn-sm" (click)="limparFiltros()">Limpar</button>
+  <div class="filtros-acoes">
+    <button class="btn btn-ghost btn-sm" (click)="limparFiltros()">Limpar</button>
 
-  <div class="colunas-controle">
-    <button class="btn btn-outline btn-sm" (click)="alternarPainelColunas()">⚙ Colunas</button>
+    <div class="colunas-controle">
+      <button class="btn btn-outline btn-sm" (click)="alternarPainelColunas()">⚙ Colunas</button>
     @if (painelColunas()) {
       <div class="painel-colunas card">
         <div class="painel-titulo">
@@ -53,6 +54,7 @@
         <button class="btn btn-ghost btn-sm largura-total" (click)="restaurarColunas()">Restaurar padrão</button>
       </div>
     }
+    </div>
   </div>
 </div>
 
