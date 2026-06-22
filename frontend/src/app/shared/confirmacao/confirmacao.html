@@ -1,0 +1,14 @@
+@if (servico.pedido(); as p) {
+  <div class="overlay" (click)="servico.responder(false)">
+    <div class="dialogo" role="alertdialog" aria-modal="true" aria-labelledby="confirmacao-titulo" (click)="$event.stopPropagation()">
+      <h2 class="titulo" id="confirmacao-titulo">{{ p.titulo }}</h2>
+      <p class="mensagem">{{ p.mensagem }}</p>
+      <div class="acoes">
+        <button class="btn btn-ghost" (click)="servico.responder(false)">{{ p.textoCancelar }}</button>
+        <button class="btn" [class.btn-danger]="p.perigo" [class.btn-primary]="!p.perigo" (click)="servico.responder(true)">
+          {{ p.textoConfirmar }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -3,6 +3,8 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ClienteService } from '../../../core/services/cliente.service';
+import { ConfirmacaoService } from '../../../core/services/confirmacao.service';
+import { NotificacaoService } from '../../../core/services/notificacao.service';
 import { Cliente, GENEROS, TipoPessoa } from '../../../core/models/cliente.model';
 
 interface Coluna {
@@ -32,6 +34,8 @@ const STORAGE_COLUNAS = 'cadastrador.colunas';
 export class ClienteList implements OnInit {
   private service = inject(ClienteService);
   private router = inject(Router);
+  private confirmacao = inject(ConfirmacaoService);
+  private notificacao = inject(NotificacaoService);
 
   protected readonly clientes = signal<Cliente[]>([]);
   protected readonly carregando = signal(false);
@@ -171,16 +175,26 @@ export class ClienteList implements OnInit {
     this.router.navigate(['/clientes', cliente.id]);
   }
 
-  excluir(cliente: Cliente): void {
+  async excluir(cliente: Cliente): Promise<void> {
     if (!cliente.id) {
       return;
     }
-    if (!confirm(`Excluir o cliente "${cliente.nome}"? Esta ação não pode ser desfeita.`)) {
+    const confirmado = await this.confirmacao.perguntar({
+      titulo: 'Excluir cliente',
+      mensagem: `Tem certeza que deseja excluir "${cliente.nome}"? Esta ação não pode ser desfeita.`,
+      textoConfirmar: 'Excluir',
+      textoCancelar: 'Cancelar',
+      perigo: true
+    });
+    if (!confirmado) {
       return;
     }
     this.service.excluir(cliente.id).subscribe({
-      next: () => this.carregar(),
-      error: () => this.erro.set('Não foi possível excluir o cliente.')
+      next: () => {
+        this.notificacao.sucesso(`Cliente "${cliente.nome}" excluído com sucesso.`);
+        this.carregar();
+      },
+      error: () => this.notificacao.erro('Não foi possível excluir o cliente.')
     });
   }
 

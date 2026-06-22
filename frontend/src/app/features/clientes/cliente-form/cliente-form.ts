@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ClienteService } from '../../../core/services/cliente.service';
 import { CepError, CepService } from '../../../core/services/cep.service';
+import { NotificacaoService } from '../../../core/services/notificacao.service';
 import {
   Cliente,
   GENEROS,
@@ -26,6 +27,7 @@ export class ClienteForm implements OnInit {
   private cepService = inject(CepService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private notificacao = inject(NotificacaoService);
 
   protected readonly tiposPessoa = TIPOS_PESSOA;
   protected readonly generos = GENEROS;
@@ -311,7 +313,10 @@ export class ClienteForm implements OnInit {
     const obs = id ? this.service.atualizar(id, payload) : this.service.criar(payload);
 
     obs.subscribe({
-      next: () => this.router.navigate(['/clientes']),
+      next: () => {
+        this.notificacao.sucesso(id ? 'Cliente atualizado com sucesso.' : 'Cliente salvo com sucesso.');
+        this.router.navigate(['/clientes']);
+      },
       error: (e: HttpErrorResponse) => {
         this.salvando.set(false);
         this.erro.set(e.error?.mensagem ?? 'Não foi possível salvar o cliente.');

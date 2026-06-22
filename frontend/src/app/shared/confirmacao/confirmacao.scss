@@ -1,0 +1,54 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+  animation: overlay-entra 0.15s ease-out;
+}
+
+.dialogo {
+  width: 100%;
+  max-width: 420px;
+  background: var(--cor-superficie);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-md);
+  padding: 1.5rem;
+  animation: dialogo-entra 0.18s ease-out;
+}
+
+.titulo {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.mensagem {
+  margin: 0 0 1.5rem;
+  color: var(--cor-texto-suave);
+  line-height: 1.5;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+@keyframes overlay-entra {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialogo-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

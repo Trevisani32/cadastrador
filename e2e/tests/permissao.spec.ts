@@ -5,16 +5,15 @@ test.describe('Autorização por papel (DELETE restrito a ADMIN)', () => {
   test('usuário comum é bloqueado ao excluir e NÃO é deslogado (403 ≠ logout)', async ({ page }) => {
     const usuario = await criarUsuarioComum(page);
 
-    // Aceita o confirm() nativo da exclusão.
-    page.on('dialog', (dialog) => dialog.accept());
-
     await login(page, usuario.username, usuario.senha);
 
     const primeiroNome = await page.locator('tbody tr td strong').first().textContent();
+    // Abre o diálogo de confirmação próprio do sistema e confirma a exclusão.
     await page.getByRole('button', { name: 'Excluir' }).first().click();
+    await page.locator('.dialogo').getByRole('button', { name: 'Excluir' }).click();
 
     // Graças à correção do interceptor, o 403 mantém a sessão (não redireciona para /login).
-    await expect(page.locator('.alerta-erro')).toBeVisible();
+    await expect(page.locator('.toast.erro')).toBeVisible();
     await expect(page).toHaveURL(/\/clientes/);
     await expect(page).not.toHaveURL(/\/login/);
     // O cliente continua na lista — a exclusão foi de fato bloqueada.
