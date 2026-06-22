@@ -20,7 +20,7 @@ export const demoApiInterceptor: HttpInterceptorFn = (req, next) => {
   const path = url.pathname.substring(new URL(environment.apiUrl, location.origin).pathname.length);
   const p = url.searchParams;
   const body: any = req.body ?? {};
-  const idDe = (sufixo: string) => Number(sufixo.split('/')[1]);
+  const idDe = (sufixo: string) => Number(sufixo.split('/')[2]);
 
   const responder = () =>
     of(null).pipe(
