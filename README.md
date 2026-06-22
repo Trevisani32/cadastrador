@@ -8,6 +8,12 @@ Sistema completo de cadastro de clientes com **endereços**, **formas de contato
 
 > Projeto de **demonstração/portfólio**: roda na hora, sem instalar nem configurar banco de dados.
 
+## 🔗 Demo online
+
+**https://trevisani32.github.io/cadastrador/** — entre com **admin / admin123**
+
+A versão online é o **frontend** rodando no GitHub Pages em *modo demonstração*: não há backend, as operações são atendidas por dados de exemplo guardados no próprio navegador (os dados resetam ao limpar o navegador). Para rodar o sistema completo (Spring Boot + Angular de verdade), siga as instruções abaixo.
+
 ---
 
 ## Pré-requisitos

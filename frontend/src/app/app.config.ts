@@ -7,6 +7,7 @@ import localePt from '@angular/common/locales/pt';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth.interceptor';
+import { demoApiInterceptor } from './core/demo/demo-api.interceptor';
 
 registerLocaleData(localePt);
 
@@ -14,7 +15,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    // demoApiInterceptor vem primeiro: no modo demo responde localmente; fora dele, é transparente.
+    provideHttpClient(withInterceptors([demoApiInterceptor, authInterceptor])),
     { provide: LOCALE_ID, useValue: 'pt-BR' }
   ]
 };
