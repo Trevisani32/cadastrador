@@ -219,7 +219,11 @@
               @if (ehOutroParentesco(par)) {
                 <div class="campo col-2">
                   <label>Qual o parentesco? *</label>
-                  <input type="text" formControlName="descricao" placeholder="Ex.: tio(a), primo(a), avô/avó" />
+                  <input type="text" formControlName="descricao" placeholder="Ex.: tio(a), primo(a), avô/avó"
+                         [class.invalido]="par.get('descricao')?.invalid && par.get('descricao')?.touched" />
+                  @if (par.get('descricao')?.touched && par.get('descricao')?.errors?.['required']) {
+                    <span class="erro-campo">Informe o parentesco.</span>
+                  }
                 </div>
               }
               <div class="campo alinhar-botao">

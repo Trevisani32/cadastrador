@@ -142,12 +142,28 @@ export class ClienteForm implements OnInit {
   }
 
   novoParentesco(dados?: Partial<Cliente['parentescos'][number]>): FormGroup {
-    return this.fb.nonNullable.group({
+    const grupo = this.fb.nonNullable.group({
       id: [dados?.id ?? null],
       parenteId: [dados?.parenteId ?? null, Validators.required],
       tipo: [dados?.tipo ?? 'FILHO_A', Validators.required],
       descricao: [dados?.descricao ?? '']
     });
+    // A descrição só é obrigatória quando o parentesco é "Outro"
+    this.aplicarValidadorParentesco(grupo);
+    grupo.get('tipo')!.valueChanges.subscribe(() => {
+      this.aplicarValidadorParentesco(grupo);
+      grupo.get('descricao')!.updateValueAndValidity();
+    });
+    return grupo;
+  }
+
+  private aplicarValidadorParentesco(grupo: FormGroup): void {
+    const descricao = grupo.get('descricao')!;
+    if (this.ehOutroParentesco(grupo)) {
+      descricao.setValidators([Validators.required]);
+    } else {
+      descricao.clearValidators();
+    }
   }
 
   ehOutroParentesco(grupo: AbstractControl): boolean {
