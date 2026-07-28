@@ -16,7 +16,8 @@ export const demoApiInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const store = inject(DemoStore);
-  const url = new URL(req.url, location.origin);
+  // urlWithParams: req.url não carrega os parâmetros de consulta (termo, filtros, paginação)
+  const url = new URL(req.urlWithParams, location.origin);
   const path = url.pathname.substring(new URL(environment.apiUrl, location.origin).pathname.length);
   const p = url.searchParams;
   const body: any = req.body ?? {};
@@ -62,7 +63,7 @@ export const demoApiInterceptor: HttpInterceptorFn = (req, next) => {
             return ok(store.atualizar(idDe(path), body as Cliente));
           }
           if (req.method === 'DELETE' && path.startsWith('/clientes/')) {
-            store.excluir(idDe(path));
+            store.excluir(req.headers.get('Authorization'), idDe(path));
             return new HttpResponse({ status: 204 });
           }
 

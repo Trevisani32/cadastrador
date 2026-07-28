@@ -148,7 +148,8 @@ export class DemoStore {
     return this.comParenteNome(atualizado);
   }
 
-  excluir(id: number): void {
+  excluir(authorization: string | null, id: number): void {
+    this.exigirAdmin(authorization);
     let lista = this.clientes();
     lista = lista.filter((x) => x.id !== id);
     // Remove vínculos que apontavam para o cliente excluído
@@ -159,6 +160,30 @@ export class DemoStore {
   }
 
   // ----- Internos -----
+
+  /** Reproduz o @PreAuthorize("hasRole('ADMIN')") do backend: exclusão só para administradores. */
+  private exigirAdmin(authorization: string | null): void {
+    const usuario = this.usuarioDoToken(authorization);
+    if (!usuario) {
+      throw this.erro(401, 'Sessão inválida');
+    }
+    if (usuario.role !== 'ROLE_ADMIN') {
+      throw this.erro(403, 'Acesso negado');
+    }
+  }
+
+  private usuarioDoToken(authorization: string | null): DemoUsuario | undefined {
+    const token = (authorization ?? '').replace('Bearer ', '');
+    if (!token.startsWith('demo.')) {
+      return undefined;
+    }
+    try {
+      const username = atob(token.substring('demo.'.length)).split(':')[0];
+      return this.usuarios().find((u) => u.username === username);
+    } catch {
+      return undefined;
+    }
+  }
 
   private comParenteNome(c: Cliente): Cliente {
     const todos = this.clientes();

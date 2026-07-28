@@ -15,8 +15,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    // demoApiInterceptor vem primeiro: no modo demo responde localmente; fora dele, é transparente.
-    provideHttpClient(withInterceptors([demoApiInterceptor, authInterceptor])),
+    // authInterceptor vem primeiro para anexar o token; o demoApiInterceptor responde
+    // localmente no modo demo (e é transparente fora dele), já enxergando o Authorization.
+    provideHttpClient(withInterceptors([authInterceptor, demoApiInterceptor])),
     { provide: LOCALE_ID, useValue: 'pt-BR' }
   ]
 };
